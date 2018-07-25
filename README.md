@@ -3,8 +3,10 @@ PRPACK
 
 Compute PageRank as fast as possible with PRPACK.
 
-### Authors: David Kurokawa, David Gleich, Chen Greif
+### Usage
 
-See docs/design.txt for some initial design considerations.
+To run distributed Page Rank on 1, 2, ..., N cores, with input size increasing proportionally to the number of cores, run:
 
-
+```
+./run N_CORES
+```
