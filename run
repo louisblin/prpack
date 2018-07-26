@@ -1,9 +1,25 @@
 #!/bin/bash
 
 N=${1:-15}
+ITERS=100
 
-for i in `seq 1 $N`; do
-  let "id=$i-1"
-  let "c=255*$i"
-  taskset -c 0-$id ./prpack_driver ?$c | tail -n 1
+CORE_IDS=(0 2 4 6 8 10 12 14 16 18 20 22 1 3 5 7 9 11 13 15 17 19 21 23)
+
+function do_run {
+  for i in `seq 1 $N`; do
+    let "c=255*$i"
+    #let "max_id=$i-1"
+    #taskset -c 0-$max_id ./prpack_driver ?$c | tail -n 1
+    cores=${CORE_IDS[@]:0:$i}
+    numactl -C `echo $cores | tr -s ' ' ','` -m 0,1 ./prpack_driver ?$c | tail -n 1
+  done
+}
+
+
+rm -rf res
+mkdir res
+
+for i in `seq 1 $ITERS`; do
+  echo "Doing $i..."
+  do_run > res/run-$i.csv
 done
